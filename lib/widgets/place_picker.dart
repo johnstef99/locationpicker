@@ -29,9 +29,15 @@ class PlacePicker extends StatefulWidget {
   final LatLng? displayLocation;
   LocalizationItem? localizationItem;
   LatLng defaultLocation = LatLng(10.5381264, 73.8827201);
+  bool withCloseButton;
 
-  PlacePicker(this.apiKey,
-      {this.displayLocation, this.localizationItem, LatLng? defaultLocation}) {
+  PlacePicker(
+    this.apiKey, {
+    this.displayLocation,
+    this.localizationItem,
+    LatLng? defaultLocation,
+    this.withCloseButton = false,
+  }) {
     if (this.localizationItem == null) {
       this.localizationItem = new LocalizationItem();
     }
@@ -137,7 +143,7 @@ class PlacePickerState extends State<PlacePicker> {
           locationResult = null;
           _delayedPop();
           return Future.value(false);
-        }  else  {
+        } else {
           return Future.value(true);
         }
       },
@@ -150,6 +156,16 @@ class PlacePickerState extends State<PlacePicker> {
           ),
           centerTitle: true,
           automaticallyImplyLeading: false,
+          actions: [
+            if (widget.withCloseButton)
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(null),
+                icon: Icon(
+                  Icons.close,
+                  color: Theme.of(context).textTheme.bodyText1?.color,
+                ),
+              ),
+          ],
         ),
         body: Column(
           children: <Widget>[
@@ -196,7 +212,8 @@ class PlacePickerState extends State<PlacePicker> {
                     Padding(
                       child: Text(widget.localizationItem!.nearBy,
                           style: TextStyle(fontSize: 16)),
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                     ),
                     Expanded(
                       child: ListView(
